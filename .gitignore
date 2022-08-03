@@ -1,2 +1,3 @@
 inventory*
 !inventory.yml.sample
+.DS_Store

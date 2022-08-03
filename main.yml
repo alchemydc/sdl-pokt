@@ -1,6 +1,6 @@
 - name: Main
   hosts: '{{ target }}'
-  gather_facts: false
+  #gather_facts: false
   #vars_files:
   #  - '{{ var_file }}'
   roles:
@@ -16,24 +16,14 @@
       tags: 'portainer'
       become: true
 
+    - role: 'pokt'
+      tags: 'pokt'
+      become: true
+
+
   handlers:
       - name: restart sshd
         service:
           name: sshd
           state: restarted
         become: true
-      
-      - name: restart networking
-        command: '/usr/sbin/ifreload -a'
-
-      - name: reload iptables
-        shell: "/usr/sbin/iptables-restore < /etc/iptables.conf"
-      
-      - name: reload ip6tables
-        shell: "/usr/sbin/ip6tables-restore < /etc/ip6tables.conf"
-
-      - name: restart rsyslog
-        service:
-          name: rsyslog
-          state: restarted
-      

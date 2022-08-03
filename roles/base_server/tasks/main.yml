@@ -17,6 +17,12 @@
     msg: "users item: {{ item }}"
   loop: "{{ users }}"
 
+- name: Create docker group
+  group:
+    name: 'docker'
+    state: present
+
+
 - name: Create admin users
   user:
     name: "{{ item.username }}"
@@ -105,7 +111,7 @@
 - name: Disable password auth for sshd
   lineinfile:
     path: /etc/ssh/sshd_config
-    regex: '^#PasswordAuthentication yes'
+    regex: '^PasswordAuthentication yes'
     line: 'PasswordAuthentication no'
   notify:
     - restart sshd

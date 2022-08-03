@@ -5,6 +5,7 @@
        - curl 
        - gnupg 
        - lsb-release
+       - jq
       state: present
       update_cache: true
 

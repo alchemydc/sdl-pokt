@@ -1,0 +1,66 @@
+version: '2.1'
+services:
+  #nginx:
+  #  container_name: nginx
+  #  image: nginx:latest
+  #  cpus: '2'
+  #  mem_limit: '2G'
+  #  ports:
+  #    - "443-444:443-444" # Where the HTTPS will terminate for your pocket nodes 
+  #  volumes:
+  #    - "/etc/letsencrypt/live/test.exampledomain.com/fullchain.pem:/etc/nginx/fullchain.pem"
+  #    - "/etc/letsencrypt/live/test.exampledomain.com/privkey.pem:/etc/nginx/privkey.pem"
+  #    - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
+  #    - "./nginx/nodes.conf:/etc/nginx/conf.d/default.conf"
+  #  logging:
+  #    options:
+  #      max-size: "10m"
+  #      max-file: "3"
+  #  networks:
+  #    - pocket
+  node1:
+    container_name: pokt_node1
+    image: pocketfoundation/pocket-core:latest
+    command: "pocket start --testnet --useCache --simulateRelay --datadir /home/app/.pocket"
+    ports:
+      - "8082:8082"  #  POKT RPC 
+      - "26656:26656" #  Tendermint Peers 
+    environment:
+      POCKET_CORE_KEY: ""
+      POCKET_CORE_PASSPHRASE: ""
+    user: $UID:$GID
+    volumes:
+        - "./node-shared/chains.json:/home/app/.pocket/config/chains.json"
+        - "./node-shared/genesis.json:/home/app/.pocket/config/genesis.json"
+        - "./node-1/config.json:/home/app/.pocket/config/config.json"
+        - "./node-1/data:/home/app/.pocket/data"
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - pocket
+#  node2:
+#    container_name: node2
+#    image: pocketfoundation/pocket-core:latest
+#    command: "pocket start --testnet --useCache --simulateRelay"
+#    ports:
+#      - "8083:8082" #  POKT RPC -- This one is incremented so it is also available on 8083 for nginx 
+#      - "26666:26666" #  Tendermint Peers 
+#    environment: 
+#      POCKET_CORE_KEY: "NODE-PRIVATE-KEY"
+#      POCKET_CORE_PASSPHRASE: "NODE-PASSPHRASE"
+#    volumes:
+#        - "./node-shared/chains.json:/home/app/.pocket/config/chains.json"
+#        - "./node-shared/genesis.json:/home/app/.pocket/config/genesis.json"
+#        - "./node-2/config.json:/home/app/.pocket/config/config.json"
+#        - "./node-2/data:/home/app/.pocket/data"
+#    logging:
+#      options: 
+#        max-size: "10m"
+#        max-file: "3"
+#    networks:
+#      - pocket
+networks:
+  pocket:
+    driver: bridge

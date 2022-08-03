@@ -1,0 +1,66 @@
+- name: Show debug data
+  debug: var=hostvars
+
+- name: Debug chains
+  debug:
+    msg: "chains item: {{ item }}"
+  loop: "{{ chains }}"
+
+- name: Create dir for pokt
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ users[0].username }}"
+    group: "{{ users[0].username }}"
+    mode: 0750
+  loop:
+    - /home/{{ users[0].username }}/pokt
+    - /home/{{ users[0].username }}/pokt/node-1
+    - /home/{{ users[0].username }}/pokt/node-shared
+
+- name: Copy docker-compose.yml to pokt dir
+  copy:
+    src: pokt_docker-compose.yml
+    dest: /home/{{ users[0].username }}/pokt/docker-compose.yml
+    owner: "{{ users[0].username }}"
+    group: "{{ users[0].username }}"
+    mode: 0640
+
+- name: Copy genesis.json to pokt node-shared dir
+  copy:
+    src: genesis.json
+    dest: /home/{{ users[0].username }}/pokt/node-shared/genesis.json
+    owner: "{{ users[0].username }}"
+    group: "{{ users[0].username }}"
+    mode: 0640
+
+- name: Copy chains.json to pokt node-shared dir
+  template:
+    src: chains.json.j2
+    dest: /home/{{ users[0].username }}/pokt/node-shared/chains.json
+    owner: "{{ users[0].username }}"
+    group: "{{ users[0].username }}"
+    mode: 0640
+
+- name: Copy config.json to pokt node-1 dir
+  template:
+    src: config.json.j2
+    dest: /home/{{ users[0].username }}/pokt/node-1/config.json
+    owner: "{{ users[0].username }}"
+    group: "{{ users[0].username }}"
+    mode: 0644  # FIXME 
+
+- name: Tear down existing pokt stack
+  community.docker.docker_compose:
+    project_src: /home/{{ users[0].username }}/pokt
+    state: absent
+
+- name: Start pokt stack
+  community.docker.docker_compose:
+    project_src: /home/{{ users[0].username }}/pokt
+    state: present
+  register: output
+
+- name: Debug compose start output
+  debug:
+    msg: output

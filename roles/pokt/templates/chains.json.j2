@@ -1,0 +1,7 @@
+[
+{% for chain in chains %}
+  { "id": "{{ chain.id }}",
+    "url": "{{ chain.rpc_uri }}"
+  }
+{% endfor%}
+]
