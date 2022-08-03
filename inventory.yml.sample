@@ -1,0 +1,14 @@
+all:
+    hosts: 
+      sdl_pokt:
+        ansible_host: 192.168.31.37
+    vars: 
+      ansible_user: someuser
+      ansible_port: 22
+      admin_users:
+        - username: 'admin1'
+          sshpublickey: 'ssh-ed25519 xxxx admin1@adminhost'
+        - username: 'admin2'
+          sshpublickey: 'ssh-ed25519 xxxx admin2@adminhost'
+      users:
+        - username: 'pokt'
