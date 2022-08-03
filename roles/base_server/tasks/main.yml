@@ -1,0 +1,111 @@
+- name: Debug admin_users
+  debug:
+    #msg: "item: {{ item }}"
+    #msg: "users: {{ users }}"
+    #msg: "users[0]: {{ users[0] }}"
+    #msg: "users[1]: {{ users[1] }}"
+    #msg: "users[0].username: '{{ users[0].username }}'"
+    #msg: "users[0].sshpublickey: '{{ users[0].sshpublickey }}'"
+    msg: "admin_users item: {{ item }}"
+  #loop: "{{ users | dict2items }}"
+  loop: "{{ admin_users }}"
+  #with_items: "{{ users }}"
+  #- "{{ users }}"
+
+- name: Debug users
+  debug:
+    msg: "users item: {{ item }}"
+  loop: "{{ users }}"
+
+- name: Create admin users
+  user:
+    name: "{{ item.username }}"
+    password: '*'   # pw is locked/disabled.  key auth only + passwordless sudo
+    state: present
+    shell: /bin/bash
+    createhome: yes
+    home: /home/{{ item.username }}
+    groups:
+      - sudo
+      - docker
+      - adm
+  loop: "{{ admin_users }}"
+
+- name: Set authorized key for admin users
+  authorized_key: 
+    user: "{{ item.username }}"
+    state: present
+    key: "{{ item.sshpublickey }}"
+    manage_dir: yes
+  loop: "{{ admin_users }}"
+
+- name: Create normal users
+  user:
+    name: "{{ item.username }}"
+    password: '*'   # pw is locked/disabled.  key auth only + passwordless sudo
+    state: present
+    shell: /bin/bash
+    createhome: yes
+    home: /home/{{ item.username }}
+    groups:
+      - docker
+  loop: "{{ users }}"
+
+- name: Setup common aliases for admin users
+  lineinfile:
+    path: /home/{{ item.username }}/.profile
+    line: alias ll='ls -laF'
+    state: present
+  loop: "{{ admin_users }}"
+  
+- name: Setup common aliases for normal users
+  lineinfile:
+    path: /home/{{ item.username }}/.profile
+    line: alias ll='ls -laF'
+    state: present
+  loop: "{{ users }}"
+
+- name: Setup common aliases for root user
+  lineinfile:
+    path: /root/.profile
+    line: alias ll='ls -laF'
+    state: present
+
+- name: Install screen and htop
+  apt:
+    name:
+      - screen
+      - htop
+      - vim
+    state: present
+    update_cache: true
+
+- name: Setup screenrc for all users
+  copy:
+    src: 'screenrc'
+    dest: '/etc/screenrc'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+
+- name: Setup passwordless sudo for members of sudo group
+  lineinfile: 
+    path: /etc/sudoers
+    regexp: '%sudo	ALL=(ALL:ALL) ALL'
+    line: '%sudo	ALL=(ALL:ALL) NOPASSWD:ALL' 
+
+- name: create /etc/vimrc.local to disable visual copy mode
+  copy:
+    src: vimrc.local
+    dest: /etc/vim/vimrc.local
+    owner: root
+    group: root
+    mode: '600'
+
+- name: Disable password auth for sshd
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regex: '^#PasswordAuthentication yes'
+    line: 'PasswordAuthentication no'
+  notify:
+    - restart sshd

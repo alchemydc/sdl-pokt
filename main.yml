@@ -1,0 +1,33 @@
+- name: Main
+  hosts: '{{ target }}'
+  gather_facts: false
+  #vars_files:
+  #  - '{{ var_file }}'
+  roles:
+    - role: 'docker_server'
+      tags: 'docker_server'
+      become: true
+    - role: 'base_server'
+      tags: 'base_server'
+      become: true
+  handlers:
+      - name: restart sshd
+        service:
+          name: sshd
+          state: restarted
+        become: true
+      
+      - name: restart networking
+        command: '/usr/sbin/ifreload -a'
+
+      - name: reload iptables
+        shell: "/usr/sbin/iptables-restore < /etc/iptables.conf"
+      
+      - name: reload ip6tables
+        shell: "/usr/sbin/ip6tables-restore < /etc/ip6tables.conf"
+
+      - name: restart rsyslog
+        service:
+          name: rsyslog
+          state: restarted
+      
