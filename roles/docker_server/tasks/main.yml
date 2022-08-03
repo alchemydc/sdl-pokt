@@ -7,13 +7,11 @@
        - lsb-release
       state: present
       update_cache: true
-    become: true
 
   - name: add GPG key
     apt_key:
       url: https://download.docker.com/linux/debian/gpg
       state: present
-    become: true
 
   - name: Add docker repository to apt
     apt_repository:
@@ -21,7 +19,6 @@
       #repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bullseye stable
       repo: deb [arch=amd64] https://download.docker.com/linux/debian bullseye stable
       state: present
-    become: true
 
   - name: Install docker engine
     apt:
@@ -31,16 +28,27 @@
         - containerd.io
       state: present
       update_cache: true
-    become: true
-
-  #- name: Test docker
-  #  command: docker info
-  #  become: true
   
   - name: Install docker-compose
     import_tasks: compose.yml
     #become: true
     tags: docker_compose
+
+  - name: Install packages required for ansible to interact w/ python daemon on host
+    apt:
+      name:
+        - python3
+        - python3-pip
+      state: present
+      update_cache: false
+    
+  - name: Install required python packages
+    pip:
+      name:
+        - docker
+        - docker-compose
+      state: present
+
 
 
 

@@ -1,0 +1,33 @@
+- name: Create dir for portainer
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ users[0].username }}"
+    group: "{{ users[0].username }}"
+    mode: 0750
+  loop:
+    - /home/{{ users[0].username }}/portainer
+    - /home/{{ users[0].username }}/portainer/data
+
+- name: Copy docker-compose.yml to portainer dir
+  copy:
+    src: portainer_docker-compose.yml
+    dest: /home/{{ users[0].username }}/portainer/docker-compose.yml
+    owner: "{{ users[0].username }}"
+    group: "{{ users[0].username }}"
+    mode: 0640
+
+- name: Tear down existing portainer stack
+  community.docker.docker_compose:
+    project_src: /home/{{ users[0].username }}/portainer
+    state: absent
+
+- name: Start portainer stack
+  community.docker.docker_compose:
+    project_src: /home/{{ users[0].username }}/portainer
+    state: present
+  register: output
+
+- name: Debug compose start output
+  debug:
+    msg: output

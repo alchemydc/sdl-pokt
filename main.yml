@@ -7,9 +7,15 @@
     - role: 'docker_server'
       tags: 'docker_server'
       become: true
+
     - role: 'base_server'
       tags: 'base_server'
       become: true
+
+    - role: 'portainer'
+      tags: 'portainer'
+      become: true
+
   handlers:
       - name: restart sshd
         service:

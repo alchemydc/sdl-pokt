@@ -1,14 +1,26 @@
+- name: Check to see if compose is already installed
+  command: "which docker-compose"
+  ignore_errors: true
+  register: which_compose
+
+- name: Debug which_compose
+  debug:
+    msg: "{{ which_compose.stdout }}"
+
 - name: Get latest version of compose
   shell: curl -s "https://api.github.com/repos/docker/compose/releases/latest" | grep '"tag_name":' | cut -d '"' -f4
   register: compose_latest_version
+  when: which_compose.stdout == ""
 
 - name: debug compose latest version
   debug:
     msg: "latest compose: {{ compose_latest_version.stdout }}"
+  when: which_compose.stdout == ""
 
 - name: Install compose
   command: 'curl -sSL https://github.com/docker/compose/releases/download/{{ compose_latest_version.stdout }}/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose'  
   become: true
+  when: which_compose.stdout == ""
 
 - name: Set perms on docker-compose binary
   file:
