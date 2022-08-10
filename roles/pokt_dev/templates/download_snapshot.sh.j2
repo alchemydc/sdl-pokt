@@ -2,6 +2,8 @@
 set -ex
 
 cd {{ user_dir }}/.pocket/data
-wget -qO- {{ snapshot_url }} | tar xvf -
+# uncompressed snapshot doesn't work anymore
+#wget -qO- {{ snapshot_url }} | tar xvf -
+# using the compressed snapshot instead 
+curl -Ls "{{ snapshot_url }}" | gzip --decompress --to-stdout | tar xvf -
 chown -R {{ pokt_user }}:{{ pokt_user }} {{ user_dir }}/.pocket/data
-
