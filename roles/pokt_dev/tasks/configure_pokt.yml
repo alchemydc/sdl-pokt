@@ -1,0 +1,76 @@
+- name: Enumerate keys
+  become: yes
+  become_user: "pokt"
+  command: "pocket accounts list"
+  environment:
+        PATH: "{{ path }}"
+        GOPATH: "{{ user_dir }}/go"
+  ignore_errors: true
+  register: pocket_accounts_list
+  
+- name: Import keypair
+  become: yes
+  become_user: "pokt" 
+  command: "pocket accounts import-raw --pwd-encrypt {{ passphrase }} {{ raw_private_key }}"
+  environment:
+        PATH: "{{ path }}"
+        GOPATH: "{{ user_dir }}/go"
+  when:
+    - pocket_accounts_list.stderr is search("no Keys stored in keybase, create a key pair")
+
+- name: Enumerate validator
+  become: yes
+  become_user: "pokt"
+  command: " pocket accounts get-validator"
+  environment:
+        PATH: "{{ path }}"
+        GOPATH: "{{ user_dir }}/go"
+  ignore_errors: true
+  register: pocket_get_validator
+
+- name: Debug validator
+  debug:
+    msg: "{{ pocket_get_validator }}"
+
+- name: Create validator
+  become: yes
+  become_user: "pokt" 
+  command: "pocket accounts set-validator --pwd {{ passphrase }} {{ pokt_address }}"
+  environment:
+        PATH: "{{ path }}"
+        GOPATH: "{{ user_dir }}/go"
+  when:
+    - pocket_get_validator.failed is true
+
+- name: Download genesis
+  become: yes
+  become_user: "pokt" 
+  get_url:
+    url: "{{ genesis_url }}"
+    dest: "{{ user_dir }}/.pocket/config/genesis.json"
+    mode: '0440'
+    checksum: "{{ genesis_hash }}"
+
+- name: Deploy chains.json 
+  copy:
+    src: chains.json
+    dest: "{{ user_dir }}/.pocket/config/chains.json"
+    owner: "{{ pokt_user }}"
+    group: "{{ pokt_user }}"
+    mode: 0640
+
+- name: Deploy config.json
+  template:
+    src: config.json.j2
+    dest: "{{ user_dir }}/.pocket/config/config.json"
+    owner: "{{ pokt_user }}"
+    group: "{{ pokt_user }}"
+    mode: "0640"
+
+- name: Deploy snapshot downloader script
+  template:
+    src: download_snapshot.sh.j2
+    dest: "{{ user_dir }}/download_snapshot.sh"
+    owner: "{{ pokt_user }}"
+    group: "{{ pokt_user }}"
+    mode: "0750"

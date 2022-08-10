@@ -1,0 +1,7 @@
+#!/bin/bash
+set -ex
+
+cd {{ user_dir }}/.pocket/data
+wget -qO- {{ snapshot_url }} | tar xvf -
+chown -R {{ pokt_user }}:{{ pokt_user }} {{ user_dir }}/.pocket/data
+
