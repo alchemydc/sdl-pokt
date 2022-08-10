@@ -1,0 +1,46 @@
+version: "2.2"
+
+services:
+
+  # this will live in exclusive server
+  main:
+    image: pocket-core-beta-0.8.4:latest
+    container_name: mainnet
+    command: [ "pocket", "start", "--keybase=false", "--mainnet", "--datadir=/home/app/.pocket/"]
+    cpus: 16
+    mem_limit: 26G
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "-X", "POST", "http://localhost:8081/v1/query/height" ]
+      interval: 10s
+      timeout: 1s
+      retries: 10
+    ports:
+      - "8081:8081"
+      - "26656:26656/tcp"
+      - "26656:26656/udp"
+      - "26657:26657"
+    volumes:
+      # Exclusive main files
+      - ./pokt/main/config.json:/home/app/.pocket/config/config.json
+      - ./pokt/main/node_key.json:/home/app/.pocket/node_key.json
+      - ./pokt/main/priv_val_key.json:/home/app/.pocket/priv_val_key.json
+      # Common nodes files
+      - ./pokt/genesis.json:/home/app/.pocket/config/genesis.json
+      - ./pokt/chains.json:/home/app/.pocket/config/chains.json
+      - ./pokt/priv_val_state.json:/home/app/.pocket/priv_val_state.json
+      # Pocket Data dir
+      - ~/.poktscan/pocket-node/main/:/home/app/.pocket/
+      # Blockchain data
+      - ~/.poktscan/pocket-node/main/data/:/home/app/.pocket/data/
+    networks:
+      - default
+    logging:
+      options:
+        mode: non-blocking
+        max-size: "10m"
+        max-file: "3"
+networks:
+  default:
+    name: poktscan
+    
