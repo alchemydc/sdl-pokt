@@ -4,9 +4,9 @@
   #vars_files:
   #  - '{{ var_file }}'
   roles:
-    - role: 'docker_server'
-      tags: 'docker_server'
-      become: true
+    #- role: 'docker_server'
+    #  tags: 'docker_server'
+    #  become: true
 
     - role: 'base_server'
       tags: 'base_server'
@@ -16,9 +16,9 @@
       tags: 'portainer'
       become: true
 
-    - role: 'pokt'
-      tags: 'pokt'
-      become: true
+    #- role: 'pokt_docker'
+    #  tags: 'pokt_docker'
+    #  become: true
     
     - role: 'pokt_dev'
       tags: 'pokt_dev'
