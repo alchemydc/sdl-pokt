@@ -20,3 +20,9 @@ export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
 export GO111MODULE=on
 export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
+
+alias status='curl -s http://localhost:55657/status'
+alias wstatus='watch -n 10 "curl -s http://localhost:55657/status"'
+alias peers='curl -s http://localhost:55657/net_info | jq .result.n_peers'
+alias wpeers='watch -n 10 "curl -s http://localhost:55657/net_info | jq .result.n_peers"'
+

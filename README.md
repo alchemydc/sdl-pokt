@@ -14,4 +14,10 @@
   - [zero to node](https://docs.pokt.network/home/node/tutorials/zero-to-node)
   - [node setup docs](https://docs.pokt.network/home/node/setup)
 * pruning, or lack thereof, and what to do about it: https://linktr.ee/leanpocket
+* Test the RPC:
+  * `curl -X POST "http://$HOST:8081/v1/query/height"`
+  * `curl  "https://$HOST:8081/v1"`
+
+
+
 
