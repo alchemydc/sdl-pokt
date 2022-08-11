@@ -6,3 +6,7 @@
   import_tasks: configure_pokt.yml
   tags: "configure_pokt"
 
+- name: Configure systemd
+  import_tasks: configure_systemd.yml
+  tags: "configure_systemd"
+

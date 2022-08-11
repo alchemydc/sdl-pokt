@@ -1,0 +1,18 @@
+- name: Deploy /etc/systemd/system/pocket.service
+  become: true
+  template:
+    src: 'pocket.service.j2'
+    dest: '/etc/systemd/system/pocket.service'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  notify: daemon-reload
+
+- name: Enable and start pocket service
+  become: true
+  systemd:
+    name: pocket.service
+    enabled: yes
+    state: started
+    daemon_reload: yes
+

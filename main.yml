@@ -30,3 +30,7 @@
           name: sshd
           state: restarted
         become: true
+      
+      - name: daemon-reload
+        command: systemctl daemon-reload
+        become: true
