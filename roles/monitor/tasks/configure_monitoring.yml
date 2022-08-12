@@ -1,0 +1,83 @@
+---
+- name: Create monitoring user
+  user:
+    name: "{{ monitor_user }}"
+    password: '*'   # pw is locked/disabled.  key auth only + passwordless sudo
+    state: present
+    shell: /bin/bash
+    createhome: yes
+    home: "{{ monitor_user_dir }}"
+    uid: 1100
+    groups:
+      - docker
+      - adm
+
+- name: Create dirs for monitoring stack
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ monitor_user }}"
+    group: "{{ monitor_user }}"
+    mode: 0750
+  loop:
+    - "{{ monitor_user_dir }}/docker"
+    - "{{ monitor_user_dir }}/loki"
+    - "{{ monitor_user_dir }}/grafana"
+    - "{{ monitor_user_dir }}/prometheus"
+    - "{{ monitor_user_dir }}/prometheus/data"
+    - "{{ monitor_user_dir }}/prometheus/data/etc"
+
+- name: Copy monitoring stack docker-compose.yml to monitor dir
+  template:
+    src: monitor_docker-compose.yml.j2
+    dest: "{{ monitor_user_dir }}/docker/docker-compose.yml"
+    owner: "{{ monitor_user }}"
+    group: "{{ monitor_user }}"
+    mode: 0640
+
+- name: Copy loki config monitor loki dir
+  template:
+    src: loki-config.yml.j2
+    dest: "{{ monitor_user_dir }}/loki/loki-config.yml"
+    owner: "{{ monitor_user }}"
+    group: "{{ monitor_user }}"
+    mode: 0640
+
+- name: Copy promtail config to monitor promtail dir
+  template:
+    src: promtail-config.yml.j2
+    dest: "{{ monitor_user_dir }}/promtail/promtail-config.yml"
+    owner: "{{ monitor_user }}"
+    group: "{{ monitor_user }}"
+    mode: 0640
+
+- name: Copy prometheus alerts.yml config to monitor prometheus etc dir
+  template:
+    src: prometheus_alert.yml.j2
+    dest: "{{ monitor_user_dir }}/prometheus/etc/alert.yml"
+    owner: "{{ monitor_user }}"
+    group: "{{ monitor_user }}"
+    mode: 0640
+
+- name: Copy prometheus config to monitor prometheus etc dir
+  template:
+    src: prometheus.yml.j2
+    dest: "{{ monitor_user_dir }}/prometheus/etc/prometheus.yml"
+    owner: "{{ monitor_user }}"
+    group: "{{ monitor_user }}"
+    mode: 0640
+
+- name: Tear down existing monitoring stack
+  community.docker.docker_compose:
+    project_src: "{{ monitor_user_dir }}/docker"
+    state: absent
+
+- name: Start monitoring stack
+  community.docker.docker_compose:
+    project_src: "{{ monitor_user_dir }}/docker"
+    state: present
+  register: monitor_compose_up_output
+
+- name: Debug compose start output
+  debug:
+    msg: monitor_compose_up_output.stdout

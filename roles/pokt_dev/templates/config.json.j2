@@ -120,8 +120,8 @@
             "IndexAllKeys": false
         },
         "Instrumentation": {
-            "Prometheus": false,
-            "PrometheusListenAddr": ":26660",
+            "Prometheus": true,
+            "PrometheusListenAddr": ":{{ custom_port_prefix }}660",
             "MaxOpenConnections": 3,
             "Namespace": "tendermint"
         }

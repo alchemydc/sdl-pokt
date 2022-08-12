@@ -1,0 +1,5 @@
+- name: Configure monitoring stack
+  import_tasks: configure_monitoring.yml
+  tags: "configure_monitoring"
+
+

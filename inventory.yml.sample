@@ -24,11 +24,11 @@ all:
     PexReactor: "true"  # yes it's weird to quote a bool but it's necessary for this to parse properly
     go_version: '1.19'
     pokt_user: 'pokt'
-    user_dir: "/home/{{ pokt_user }}"
+    pokt_user_dir: "/home/{{ pokt_user }}"
     custom_port_prefix: 55
     repo: 'https://github.com/pokt-network/pocket-core'
     pokt_release_tag: 'RC-0.8.3'
-    path: '/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/local/go/bin:{{ user_dir }}/go/bin'
+    path: '/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/local/go/bin:{{ pokt_user_dir }}/go/bin'
     passphrase: 'supersecretpassphrase'
     raw_private_key: 'rawsecretkey'
     pokt_address: 'acct_addr'

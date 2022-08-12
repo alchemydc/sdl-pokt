@@ -26,7 +26,7 @@
 
 - name: Create go project dirs for pokt user
   file:
-    path: "{{ user_dir }}/{{ item }}"
+    path: "{{ pokt_user_dir }}/{{ item }}"
     owner: '{{ pokt_user }}'
     group: '{{ pokt_user }}'
     state: directory
@@ -40,7 +40,7 @@
 - name: copy .profile
   template:
     src: 'profile.j2'
-    dest: '{{ user_dir }}/.profile'
+    dest: '{{ pokt_user_dir }}/.profile'
     owner: '{{ pokt_user }}'
     group: '{{ pokt_user }}'
     mode: '0600'
@@ -66,7 +66,7 @@
       become_user: "{{ pokt_user }}"
       git:
         repo: '{{ repo }}'
-        dest: '{{ user_dir }}/go/src/github.com/pokt-network/pocket-core'
+        dest: '{{ pokt_user_dir }}/go/src/github.com/pokt-network/pocket-core'
         version: '{{ pokt_release_tag }}'
         update: yes
         force: yes
@@ -75,12 +75,12 @@
     - name: build and install pokt binary
       become: yes
       become_user: "{{ pokt_user }}"
-      command: "go build -o {{ user_dir }}/go/bin/pocket"
+      command: "go build -o {{ pokt_user_dir }}/go/bin/pocket"
       args: 
-        chdir: "{{ user_dir }}/go/src/github.com/pokt-network/pocket-core/app/cmd/pocket_core"
+        chdir: "{{ pokt_user_dir }}/go/src/github.com/pokt-network/pocket-core/app/cmd/pocket_core"
       environment:
         PATH: "{{ path }}"
-        GOPATH: "{{ user_dir }}/go"
+        GOPATH: "{{ pokt_user_dir }}/go"
 
 
       

@@ -6,9 +6,9 @@ Wants=network-online.target systemd-networkd-wait-online.service
 [Service]
 User={{ pokt_user }}
 Group={{ pokt_user }}
-#WorkingDirectory={{ user_dir }}
-ExecStart={{ user_dir }}/go/bin/pocket start
-ExecStop={{ user_dir }}/go/bin/pocket stop
+#WorkingDirectory={{ pokt_user_dir }}
+ExecStart={{ pokt_user_dir }}/go/bin/pocket start
+ExecStop={{ pokt_user_dir }}/go/bin/pocket stop
 
 
 [Install]
