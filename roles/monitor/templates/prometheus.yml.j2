@@ -6,7 +6,7 @@ rule_files:
   - alert.yml
 
 scrape_configs:
-  - job_name: services
+  - job_name: local_prometheus
     metrics_path: /metrics
     static_configs:
       - targets:
@@ -16,6 +16,11 @@ scrape_configs:
     static_configs:
       - targets:
           - '10.10.60.100:8083'   # prometheus port controlled in pocket config.json, doesn't seem to report anything useful
+          #- '10.10.60.100:{{custom_port_prefix}}660'   # prometheus port for tendermint in pocket config.json
+  - job_name: tendermint
+    metrics_path: /metrics
+    static_configs:
+      - targets:
           - '10.10.60.100:{{custom_port_prefix}}660'   # prometheus port for tendermint in pocket config.json
   - job_name: node
     metrics_path: /metrics
