@@ -21,16 +21,16 @@
 - name: Enumerate validator
   become: yes
   become_user: "pokt"
-  command: " pocket accounts get-validator"
+  command: "pocket accounts get-validator"
   environment:
         PATH: "{{ path }}"
         GOPATH: "{{ user_dir }}/go"
   ignore_errors: true
   register: pocket_get_validator
 
-- name: Debug validator
-  debug:
-    msg: "{{ pocket_get_validator }}"
+#- name: Debug validator
+#  debug:
+#    msg: "{{ pocket_get_validator }}"
 
 - name: Create validator
   become: yes
@@ -74,3 +74,15 @@
     owner: "{{ pokt_user }}"
     group: "{{ pokt_user }}"
     mode: "0750"
+
+- name: Deploy validator key install script
+  template:
+    src: install_validator_key.sh.j2
+    dest: "{{ user_dir }}/install_mainnet_key.sh"
+    owner: "{{ pokt_user }}"
+    group: "{{ pokt_user }}"
+    mode: "0750"
+  tags: 'validator_install'
+
+
+

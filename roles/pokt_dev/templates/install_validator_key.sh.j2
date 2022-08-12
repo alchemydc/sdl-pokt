@@ -1,0 +1,33 @@
+#!/bin/bash
+set -e
+
+echo "This script is used to securely install the mainnet validator keys"
+echo "You will be prompted for the raw private key and passphrase, which will not be written to history"
+
+read -sp "Enter the raw private key to import: " RAW_PRIVATE_KEY
+echo -e "\nEnter the passphrase to encrypt this key: "
+read -s PASSPHRASE
+
+# note that next command is preceded by a space to keep the raw private key from being stored in .bash_history
+echo "Importing raw private key. You will be prompted to enter the passphrase for this key"
+ pocket accounts import-raw --pwd-encrypt $PASSPHRASE $RAW_PRIVATE_KEY
+
+echo "Listing pocket accounts in keychain"
+# note keychain is stored in ~/.pocket/pocket-keybase.db/
+pocket accounts list
+
+echo "Enumerating address for added account"
+ACCT_ADDRESS=$(pocket accounts list | grep '(0)' | cut -d ' ' -f 2) 
+echo "Account address: $ACCT_ADDRESS"
+
+echo "Setting validator to $ACCT_ADDRESS"
+ pocket accounts set-validator --pwd $PASSPHRASE $ACCT_ADDRESS
+
+echo "Verifying validator selection"
+VALIDATOR_ADDRESS=$(pocket accounts get-validator | cut -d ':' -f 2)
+if [[ $ACCT_ADDRESS == $VALIDATOR_ADDRESS ]]; then
+  echo "Validator address successfully configured"
+else
+  echo "Problem configuring validator address"
+  exit 1;
+fi
