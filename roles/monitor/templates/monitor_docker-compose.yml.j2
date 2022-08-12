@@ -4,6 +4,7 @@ networks:
 services:
   loki:
     image: grafana/loki:2.4.0
+    container_name: loki
     volumes:
       - {{ monitor_user_dir }}/loki:/etc/loki
     ports:
@@ -15,6 +16,7 @@ services:
     user: "1100:1100"
   promtail:
     image: grafana/promtail:2.4.0
+    container_name: promtail
     volumes:
       - /var/log:/var/log
       - {{ monitor_user_dir }}/promtail:/etc/promtail
@@ -26,6 +28,7 @@ services:
       - monitoring
   grafana:
     image: grafana/grafana:latest
+    container_name: grafana
     user: "1100"
     volumes:
       - {{ monitor_user_dir }}/grafana:/var/lib/grafana
@@ -36,6 +39,7 @@ services:
       - monitoring
   prometheus:
      image: prom/prometheus:latest
+     container_name: prometheus
      ports:
        - "9090:9090"
      volumes:
@@ -46,4 +50,3 @@ services:
      networks:
        - monitoring
      user: "1100:1100"
-

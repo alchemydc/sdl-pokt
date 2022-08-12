@@ -115,3 +115,10 @@
     line: 'PasswordAuthentication no'
   notify:
     - restart sshd
+
+- name: Install node_exporter # note that the version in the debian bullseye repo is over a year old, but <shrug>
+  apt:
+    name:
+      - prometheus-node-exporter
+    state: present
+    update_cache: true

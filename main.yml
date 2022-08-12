@@ -27,7 +27,7 @@
     - role: 'pokt_dev'
       tags: 'pokt_dev'
       become: true
-
+    
   handlers:
       - name: restart sshd
         service:
