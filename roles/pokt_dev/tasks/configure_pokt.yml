@@ -50,14 +50,16 @@
     dest: "{{ pokt_user_dir }}/.pocket/config/genesis.json"
     mode: '0440'
     checksum: "{{ genesis_hash }}"
+  notify: restart pocket
 
 - name: Deploy chains.json 
-  copy:
-    src: chains.json
-    dest: "{{ pokt_user_dir }}/.pocket/config/chains.json"
+  template:
+    src: chains.json.j2
+    dest: "{{ pokt_user_dir}}/.pocket/config/chains.json"
     owner: "{{ pokt_user }}"
     group: "{{ pokt_user }}"
     mode: 0640
+  notify: restart pocket
 
 - name: Deploy config.json
   template:
@@ -66,6 +68,26 @@
     owner: "{{ pokt_user }}"
     group: "{{ pokt_user }}"
     mode: "0640"
+  notify: restart pocket
+
+- name: register public ip
+  uri:
+    url: 'https://api.ipify.org?format=json'
+  register: public_ip
+  when: expose_public_ip|bool == true
+
+#- name: Debug public ip
+#  debug:
+#    msg: "{{ public_ip }}"
+
+- name: Set up external address
+  lineinfile:
+    path: '{{ pokt_user_dir }}/.pocket/config/config.json'
+    regexp: '\"ExternalAddress\":'
+    line: "\t    \"ExternalAddress\": \"tcp://{{ public_ip.json.ip }}:{{ custom_port_prefix }}656\","
+    state: present
+  when: public_ip.changed
+  notify: restart pocket
 
 - name: Deploy snapshot downloader script
   template:

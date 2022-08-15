@@ -21,8 +21,10 @@ export GOPATH=$HOME/go
 export GO111MODULE=on
 export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
 
+INTERVAL=1
+
 alias status='curl -s http://localhost:55657/status'
-alias wstatus='watch -n 10 "curl -s http://localhost:55657/status"'
+alias wstatus='watch -n $INTERVAL "curl -s http://localhost:55657/status"'
 alias peers='curl -s http://localhost:55657/net_info | jq .result.n_peers'
-alias wpeers='watch -n 10 "curl -s http://localhost:55657/net_info | jq .result.n_peers"'
+alias wpeers='watch -n $INTERVAL "curl -s http://localhost:55657/net_info | jq .result.n_peers"'
 

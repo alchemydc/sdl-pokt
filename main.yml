@@ -38,3 +38,9 @@
       - name: daemon-reload
         command: systemctl daemon-reload
         become: true
+      
+      - name: restart pocket
+        service:
+          name: pocket
+          state: restarted
+        become: true
