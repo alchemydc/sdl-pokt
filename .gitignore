@@ -1,3 +1,6 @@
 inventory*
 !inventory.yml.sample
 .DS_Store
+private/*
+vault.yml
+ansible.cfg

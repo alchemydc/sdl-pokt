@@ -11,7 +11,7 @@
 - name: Import keypair
   become: yes
   become_user: "pokt" 
-  command: "pocket accounts import-raw --pwd-encrypt {{ passphrase }} {{ raw_private_key }}"
+  command: "pocket accounts import-raw --pwd-encrypt {{ account_passphrase }} {{ raw_private_key }}"
   environment:
         PATH: "{{ path }}"
         GOPATH: "{{ pokt_user_dir }}/go"
@@ -35,7 +35,7 @@
 - name: Create validator
   become: yes
   become_user: "pokt" 
-  command: "pocket accounts set-validator --pwd {{ passphrase }} {{ pokt_address }}"
+  command: "pocket accounts set-validator --pwd {{ account_passphrase }} {{ account_address }}"
   environment:
         PATH: "{{ path }}"
         GOPATH: "{{ pokt_user_dir }}/go"

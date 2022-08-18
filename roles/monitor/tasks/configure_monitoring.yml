@@ -1,4 +1,8 @@
 ---
+- name: Debug monitoring
+  debug: 
+    msg: "{{ hostvars[inventory_hostname] }}"
+
 - name: Create monitoring user
   user:
     name: "{{ monitor_user }}"
