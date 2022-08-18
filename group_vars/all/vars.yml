@@ -4,6 +4,7 @@ grafana_cloud_prometheus_username: "{{ vault_grafana_cloud_prometheus_username }
 grafana_cloud_prometheus_password: "{{ vault_grafana_cloud_prometheus_password }}"
 grafana_cloud_promtail_username: "{{ vault_grafana_cloud_promtail_username }}"
 grafana_cloud_promtail_apikey: "{{ vault_grafana_cloud_promtail_apikey }}"
+grafana_cloud_promtail_url: "https://{{ grafana_cloud_promtail_username }}:{{ grafana_cloud_promtail_apikey }}@logs-prod3.grafana.net/loki/api/v1/push"
 
 users:
   - username: 'pokt'
