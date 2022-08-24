@@ -44,3 +44,9 @@
           name: pocket
           state: restarted
         become: true
+      
+      - name: restart docker
+        service:
+          name: docker
+          state: restarted
+        become: true

@@ -69,6 +69,7 @@
     group: "{{ pokt_user }}"
     mode: "0640"
   notify: restart pocket
+  # note that this is always going to change, and trigger a restart b/c the template does NOT have the public IP in it
 
 - name: register public ip
   uri:
@@ -86,7 +87,7 @@
     regexp: '\"ExternalAddress\":'
     line: "\t    \"ExternalAddress\": \"tcp://{{ public_ip.json.ip }}:{{ custom_port_prefix }}656\","
     state: present
-  when: public_ip.changed
+  #when: public_ip.changed
   notify: restart pocket
 
 - name: Deploy snapshot downloader script

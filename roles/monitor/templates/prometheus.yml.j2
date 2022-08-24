@@ -26,7 +26,8 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets:
-          - '10.10.60.100:9100'   # node exporter
+          - '10.10.60.100:9100'   # pokt node
+          - '10.10.50.70:9100'   # evmos relayer 0
 
 remote_write: 
 - url: {{ grafana_cloud_prometheus_url }}

@@ -1,27 +1,24 @@
 - name: Debug admin_users
   debug:
-    #msg: "item: {{ item }}"
-    #msg: "users: {{ users }}"
-    #msg: "users[0]: {{ users[0] }}"
-    #msg: "users[1]: {{ users[1] }}"
-    #msg: "users[0].username: '{{ users[0].username }}'"
-    #msg: "users[0].sshpublickey: '{{ users[0].sshpublickey }}'"
     msg: "admin_users item: {{ item }}"
-  #loop: "{{ users | dict2items }}"
   loop: "{{ admin_users }}"
-  #with_items: "{{ users }}"
-  #- "{{ users }}"
 
 - name: Debug users
   debug:
     msg: "users item: {{ item }}"
   loop: "{{ users }}"
 
+- name: Install sudo
+  apt:
+    name:
+      - sudo
+    state: present
+    update_cache: true
+
 - name: Create docker group
   group:
     name: 'docker'
     state: present
-
 
 - name: Create admin users
   user:
