@@ -36,4 +36,4 @@ genesis_hash: 'sha256:83e411fe6298d83963f2ebf5af3ef65b49dd029a6eb1a04db31a08b244
 snapshot_url: 'https://snapshot.nodes.pokt.network/latest.tar.gz'
 expose_public_ip: true
 
-ethereum_rpc_uri: 'https://fixme'
+ethereum_rpc_uri: "{{ vault_ethereum_rpc_uri }}"

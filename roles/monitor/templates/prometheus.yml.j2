@@ -22,12 +22,13 @@ scrape_configs:
     static_configs:
       - targets:
           - '10.10.60.100:{{custom_port_prefix}}660'   # prometheus port for tendermint in pocket config.json
-  - job_name: node
+  - job_name: node  # node_exporter
     metrics_path: /metrics
     static_configs:
       - targets:
-          - '10.10.60.100:9100'   # pokt node
+          - '10.10.60.100:9100'  # pokt node
           - '10.10.50.70:9100'   # evmos relayer 0
+          - '10.10.50.71:9100'   # evmos relayer 1
 
 remote_write: 
 - url: {{ grafana_cloud_prometheus_url }}

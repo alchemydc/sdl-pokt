@@ -87,7 +87,7 @@
     regexp: '\"ExternalAddress\":'
     line: "\t    \"ExternalAddress\": \"tcp://{{ public_ip.json.ip }}:{{ custom_port_prefix }}656\","
     state: present
-  #when: public_ip.changed
+  #when: public_ip.changed    # can't use this conditional because the IP can't be baked into the template
   notify: restart pocket
 
 - name: Deploy snapshot downloader script
