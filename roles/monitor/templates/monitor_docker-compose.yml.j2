@@ -1,6 +1,9 @@
 version: "3"
 networks:
   monitoring:
+    driver: bridge                       
+    driver_opts:                         
+      com.docker.network.driver.mtu: {{ sdn_mtu }}
 services:
   loki:
     image: grafana/loki:2.4.0

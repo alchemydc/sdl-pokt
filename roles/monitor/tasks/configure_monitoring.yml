@@ -71,6 +71,11 @@
     group: "{{ monitor_user }}"
     mode: 0640
 
+- name: Create docker network for monitoring stack
+  community.docker.docker_network:
+    name: monitoring
+    driver_options: { "com.docker.network.driver.mtu": "{{ sdn_mtu }}" }
+
 - name: Tear down existing monitoring stack
   community.docker.docker_compose:
     project_src: "{{ monitor_user_dir }}/docker"
