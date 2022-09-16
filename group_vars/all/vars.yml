@@ -22,7 +22,7 @@ monitor_user: 'monitor'
 monitor_user_dir: "/home/{{ monitor_user }}"
 custom_port_prefix: 55
 repo: 'https://github.com/pokt-network/pocket-core'
-pokt_release_tag: 'BETA-0.9.0'
+pokt_release_tag: 'BETA-0.9.1'
 path: '/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin:/usr/local/go/bin:{{ pokt_user_dir }}/go/bin'
 
 account_address: "{{ vault_account_address }}"
