@@ -23,7 +23,8 @@
 - name: Create admin users
   user:
     name: "{{ item.username }}"
-    password: '*'   # pw is locked/disabled.  key auth only + passwordless sudo
+    #password: '*'   # pw is locked/disabled.  key auth only + passwordless sudo
+    password: "{{ item.password }}"   # pw is locked/disabled.  key auth only + passwordless sudo
     state: present
     shell: /bin/bash
     createhome: yes
@@ -78,7 +79,7 @@
   apt:
     name:
       - screen
-      - htop
+      #- htop  #packaged version doesn't play nice w/ LXC
       - vim
     state: present
     update_cache: true
@@ -113,9 +114,9 @@
   notify:
     - restart sshd
 
-- name: Install node_exporter # note that the version in the debian bullseye repo is over a year old, but <shrug>
-  apt:
-    name:
-      - prometheus-node-exporter
-    state: present
-    update_cache: true
+#- name: Install node_exporter # note that the version in the debian bullseye repo is over a year old, but <shrug>
+#  apt:
+#    name:
+#      - prometheus-node-exporter
+#    state: present
+#    update_cache: true
