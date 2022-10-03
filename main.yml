@@ -12,9 +12,9 @@
       tags: 'base_server'
       become: true
 
-    - role: 'portainer'
-      tags: 'portainer'
-      become: true
+    #- role: 'portainer'
+    #  tags: 'portainer'
+    #  become: true
 
     #- role: 'pokt_docker'
     #  tags: 'pokt_docker'
