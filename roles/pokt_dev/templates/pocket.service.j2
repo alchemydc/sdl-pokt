@@ -7,9 +7,12 @@ Wants=network-online.target systemd-networkd-wait-online.service
 User={{ pokt_user }}
 Group={{ pokt_user }}
 #WorkingDirectory={{ pokt_user_dir }}
+{% if testnet is defined and testnet == "testnet" %}
+ExecStart={{ pokt_user_dir }}/go/bin/pocket start --testnet={{ testnet }}
+{% else %}
 ExecStart={{ pokt_user_dir }}/go/bin/pocket start
+{% endif %}
 ExecStop={{ pokt_user_dir }}/go/bin/pocket stop
-
 
 [Install]
 WantedBy=default.target
