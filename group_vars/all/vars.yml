@@ -41,3 +41,4 @@ expose_public_ip: true
 
 ethereum_rpc_uri: "{{ vault_ethereum_rpc_uri }}"
 osmosis_rpc_uri: "{{ vault_osmosis_rpc_uri }}"
+solana_rpc_uri: "{{ vault_solana_rpc_uri }}"
