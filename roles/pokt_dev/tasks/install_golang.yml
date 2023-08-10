@@ -1,0 +1,47 @@
+- name: Enumerate installed go
+  #command: "go version"
+  shell: ". /home/{{ pokt_user }}/.profile; go version"
+  ignore_errors: true
+  become: true
+  become_user: "{{ pokt_user }}"
+  register: which_go
+
+- name: Debug which_go
+  debug:
+    msg: "{{ which_go.stdout }}"
+
+- name: download and unarchive go
+  block:
+    - name: Download go
+      get_url:
+        url: 'https://golang.org/dl/go{{ go_version }}.linux-amd64.tar.gz'
+        dest: '/tmp/go{{ go_version }}.linux-amd64.tar.gz'
+        mode: '0700'
+
+    - name: remove old install of golang
+      file: 
+        path: '/usr/local/go'
+        state: absent
+      ignore_errors: true
+      become: true
+
+    - name: unarchive go
+      unarchive:
+        src: '/tmp/go{{ go_version }}.linux-amd64.tar.gz'
+        remote_src: yes
+        dest: '/usr/local/'
+        owner: root
+        group: root
+        mode: '0755'
+      become: true
+
+    - name: Change go folder permission
+      file:
+        path: '/home/{{ pokt_user }}/go'
+        owner: '{{ pokt_user }}'
+        group: '{{ pokt_user }}'
+        recurse: true
+        mode: '0755'
+      become: true
+
+  when: which_go.stdout is not search "{{ go_version }}"

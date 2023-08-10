@@ -1,3 +1,38 @@
+- name: Create unprivileged pokt user
+  user:
+    name: "{{ pokt_user }}"
+    password: '*'   # pw is locked/disabled.  key auth only + passwordless sudo
+    state: present
+    shell: /bin/bash
+    createhome: yes
+    home: /home/{{ pokt_user }}
+    #groups:
+    # - sudo     # fixme: least privilege start/stop pokt services
+
+- name: Create go project dirs for pokt user
+  file:
+    path: "{{ pokt_user_dir }}/{{ item }}"
+    owner: '{{ pokt_user }}'
+    group: '{{ pokt_user }}'
+    state: directory
+    mode: '0755'
+  loop:
+    - 'go'
+    - 'go/bin'
+    - 'go/src'
+    - 'go/src/github.com/pokt-network'
+
+- name: copy .profile
+  template:
+    src: 'profile.j2'
+    dest: '{{ pokt_user_dir }}/.profile'
+    owner: '{{ pokt_user }}'
+    group: '{{ pokt_user }}'
+    mode: '0600'
+
+- name: Install golang
+  import_tasks: install_golang.yml
+
 - name: Build and install pokt binary from source
   import_tasks: build_pokt.yml
   tags: "build_pokt"

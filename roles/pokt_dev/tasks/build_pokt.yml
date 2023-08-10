@@ -1,50 +1,3 @@
-- name: Download go
-  get_url:
-    url: 'https://golang.org/dl/go{{ go_version }}.linux-amd64.tar.gz'
-    dest: '/tmp/go{{ go_version }}.linux-amd64.tar.gz'
-    mode: '0700'
-
-- name: unarchive go
-  unarchive:
-    src: '/tmp/go{{ go_version }}.linux-amd64.tar.gz'
-    remote_src: yes
-    dest: '/usr/local/'
-    owner: root
-    group: root
-    mode: '0755'
-
-- name: Create unprivileged pokt user
-  user:
-    name: "{{ pokt_user }}"
-    password: '*'   # pw is locked/disabled.  key auth only + passwordless sudo
-    state: present
-    shell: /bin/bash
-    createhome: yes
-    home: /home/{{ pokt_user }}
-    #groups:
-    # - sudo     # fixme: least privilege start/stop pokt services
-
-- name: Create go project dirs for pokt user
-  file:
-    path: "{{ pokt_user_dir }}/{{ item }}"
-    owner: '{{ pokt_user }}'
-    group: '{{ pokt_user }}'
-    state: directory
-    mode: '0755'
-  loop:
-    - 'go'
-    - 'go/bin'
-    - 'go/src'
-    - 'go/src/github.com/pokt-network'
-
-- name: copy .profile
-  template:
-    src: 'profile.j2'
-    dest: '{{ pokt_user_dir }}/.profile'
-    owner: '{{ pokt_user }}'
-    group: '{{ pokt_user }}'
-    mode: '0600'
-
 - name: install apt packages required for building pokt binary
   apt:
     name:
@@ -56,6 +9,7 @@
       - chrony
       - curl
       - acl   # needed to prevent errors when building as unprivileged user via become
+      - lz4   # for unarchiving snapshot data
     state: present
     update_cache: yes
 

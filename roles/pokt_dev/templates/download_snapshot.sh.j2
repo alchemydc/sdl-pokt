@@ -1,9 +1,14 @@
 #!/bin/bash
 set -ex
 
-cd {{ pokt_user_dir }}/.pocket/data
-# uncompressed snapshot doesn't work anymore
-#wget -qO- {{ snapshot_url }} | tar xvf -
-# using the compressed snapshot instead 
-curl -Ls "{{ snapshot_url }}" | gzip --decompress --to-stdout | tar xvf -
+POCKET_DATA_DIR={{ pokt_user_dir }}/.pocket/data
+echo "Removing old data from $POCKET_DATA_DIR"
+rm -rf $POCKET_DATA_DIR/*
+echo "Getting filename of latest snapshot from https://pocket-snapshot.liquify.com/files/latest_compressed.txt"
+latestFile=$(curl -s 'https://pocket-snapshot.liquify.com/files/latest_compressed.txt')
+# above likely subjects us to a cmd injection attack :(
+echo "Downloading and extracting snapshot data"
+wget -O - "https://pocket-snapshot.liquify.com/files/$latestFile" | lz4 -d - | tar -xv -C $POCKET_DATA_DIR
+echo "Setting perms on downloaded chain data"
 chown -R {{ pokt_user }}:{{ pokt_user }} {{ pokt_user_dir }}/.pocket/data
+echo "Done. Don't forget to start the daemon!"
