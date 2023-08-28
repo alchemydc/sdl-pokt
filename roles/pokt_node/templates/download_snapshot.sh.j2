@@ -1,0 +1,17 @@
+#!/bin/bash
+set -ex
+
+echo "Stopping pocket service"
+sudo systemctl stop pocket
+sleep 3
+POCKET_DATA_DIR={{ pokt_user_dir }}/.pocket
+echo "Removing old data from $POCKET_DATA_DIR"
+rm -rf $POCKET_DATA_DIR/data/*
+echo "Getting filename of latest snapshot from {{ snapshot_url }}/latest_compressed.txt"
+latestFile=$(curl -s '{{ snapshot_url }}/latest_compressed.txt')
+# above likely subjects us to a cmd injection attack :(
+echo "Downloading and extracting snapshot data"
+wget -O - "{{ snapshot_url }}/$latestFile" | lz4 -d - | tar -xv -C $POCKET_DATA_DIR
+echo "Setting perms on downloaded chain data"
+chown -R {{ pokt_user }}:{{ pokt_user }} $POCKET_DATA_DIR
+echo "Done. Don't forget to start the daemon! with sudo systemctl start pocket"

@@ -1,3 +1,10 @@
+- name: install required apt packages
+  apt:
+    name:
+      - acl   # needed to prevent errors when building as unprivileged user via become
+    state: present
+    update_cache: yes
+
 - name: Create unprivileged pokt user
   user:
     name: "{{ pokt_user }}"
@@ -37,11 +44,11 @@
   import_tasks: build_pokt.yml
   tags: "build_pokt"
 
-- name: Configure pokt keychain and config, etc.
-  import_tasks: configure_pokt.yml
-  tags: "configure_pokt"
-
 - name: Configure systemd
   import_tasks: configure_systemd.yml
   tags: "configure_systemd"
+
+- name: Configure pokt keychain and config, etc.
+  import_tasks: configure_pokt.yml
+  tags: "configure_pokt"
 

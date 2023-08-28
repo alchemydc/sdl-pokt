@@ -88,6 +88,7 @@
     line: "\t    \"ExternalAddress\": \"tcp://{{ public_ip.json.ip }}:{{ custom_port_prefix }}656\","
     state: present
   #when: public_ip.changed    # can't use this conditional because the IP can't be baked into the template
+  when: expose_public_ip|bool == true
   notify: restart pocket
 
 - name: Deploy snapshot downloader script
@@ -97,6 +98,13 @@
     owner: "{{ pokt_user }}"
     group: "{{ pokt_user }}"
     mode: "0750"
+
+- name: Update sudoers to permit {{ pkot_user }} start/stop pocket systemd service
+  community.general.sudoers:
+    name: allow-pocket-start-stop
+    state: present
+    user: "{{ pokt_user }}"
+    commands: /bin/systemctl stop pocket,/bin/systemctl start pocket
 
 - name: Deploy validator key install script
   template:

@@ -24,8 +24,8 @@
       tags: 'monitor'
       become: true
     
-    - role: 'pokt_dev'
-      tags: 'pokt_dev'
+    - role: 'pokt_node'
+      tags: 'pokt_node'
       become: true
     
   handlers:

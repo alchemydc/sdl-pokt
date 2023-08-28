@@ -1,0 +1,33 @@
+# if running bash
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+	. "$HOME/.bashrc"
+    fi
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export GO111MODULE=on
+export PATH=$PATH:/usr/local/go/bin:$HOME/go/bin
+
+INTERVAL=1
+
+alias status='curl -s http://localhost:{{ custom_port_prefix }}657/status'
+alias wstatus='watch -n $INTERVAL "curl -s http://localhost:{{ custom_port_prefix }}657/status"'
+alias peers='curl -s http://localhost:{{ custom_port_prefix }}657/net_info | jq .result.n_peers'
+alias wpeers='watch -n $INTERVAL "curl -s http://localhost:{{ custom_port_prefix }}657/net_info | jq .result.n_peers"'
+alias peerinfo="curl -s http://localhost:{{ custom_port_prefix }}657/net_info | jq '.result.peers[]| {moniker: .node_info.moniker, version: .node_info.version, ip: .remote_ip, outbound: .is_outbound}'"
+alias wpeerinfo='watch -n 1 "curl -s http://localhost:{{ custom_port_prefix }}657/net_info | jq '\''.result.peers[]| {moniker: .node_info.moniker, version: .node_info.version, ip: .remote_ip, outbound: .is_outbound} '\''"'
+alias ll='ls -laF'
+
