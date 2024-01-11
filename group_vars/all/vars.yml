@@ -20,7 +20,8 @@ LogLevel: "*:error"
 #go_version: '1.19.12'
 #go_version: '1.19'
 #go_version: '1.20.7'
-go_version: '1.21.0'
+#go_version: '1.21.0'
+go_version: '1.21.6'
 pokt_user: 'pokt'
 pokt_user_dir: "/home/{{ pokt_user }}"
 monitor_user: 'monitor'
@@ -45,9 +46,11 @@ genesis_url: 'https://raw.githubusercontent.com/pokt-network/pocket-network-gene
 genesis_hash: 'sha256:83e411fe6298d83963f2ebf5af3ef65b49dd029a6eb1a04db31a08b244f3d414'
 #snapshot_url: 'https://snapshot.nodes.pokt.network/latest.tar.gz'
 snapshot_url: 'https://pocket-snapshot.liquify.com/files'
-#expose_public_ip: true
-expose_public_ip: false
+expose_public_ip: true
+#expose_public_ip: false
 
 ethereum_rpc_uri: "{{ vault_ethereum_rpc_uri }}"
 osmosis_rpc_uri: "{{ vault_osmosis_rpc_uri }}"
 solana_rpc_uri: "{{ vault_solana_rpc_uri }}"
+
+ip_checker_url: "{{ vault_ip_checker_url }}"

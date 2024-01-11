@@ -104,7 +104,7 @@
     name: allow-pocket-start-stop
     state: present
     user: "{{ pokt_user }}"
-    commands: /bin/systemctl stop pocket,/bin/systemctl start pocket
+    commands: /bin/systemctl stop pocket,/bin/systemctl start pocket,/bin/systemctl restart pocket
 
 - name: Deploy validator key install script
   template:

@@ -2,6 +2,7 @@
   apt:
     name:
       - acl   # needed to prevent errors when building as unprivileged user via become
+      - jq
     state: present
     update_cache: yes
 
@@ -51,4 +52,27 @@
 - name: Configure pokt keychain and config, etc.
   import_tasks: configure_pokt.yml
   tags: "configure_pokt"
+
+- name: Update sudoers to permit pokt user to start/stop pocket service
+  community.general.sudoers:
+    name: allow-pocket-start-stop
+    state: present
+    user: "{{ pokt_user }}"
+    commands: /bin/systemctl stop pocket,/bin/systemctl start pocket,/bin/systemctl restart pocket
+
+- name: Deploy update_public_ip.sh script
+  template:
+    src: "update_public_ip.sh.j2"
+    dest: "{{ pokt_user_dir }}/update_public_ip.sh"
+    owner: "{{ pokt_user }}"
+    group: "{{ pokt_user }}"
+    mode: 0750
+
+- name: Schedule update_public_ip.sh script to run daily
+  ansible.builtin.cron:
+    name: "daily script run"
+    user: "{{ pokt_user }}"
+    minute: "20"
+    hour: "4"
+    job: "{{ pokt_user_dir }}/update_public_ip.sh > /dev/null 2>&1"
 
