@@ -53,4 +53,7 @@ ethereum_rpc_uri: "{{ vault_ethereum_rpc_uri }}"
 osmosis_rpc_uri: "{{ vault_osmosis_rpc_uri }}"
 solana_rpc_uri: "{{ vault_solana_rpc_uri }}"
 
+celo_rpc_url: "{{ vault_celo_rpc_url }}"
+
 ip_checker_url: "{{ vault_ip_checker_url }}"
+

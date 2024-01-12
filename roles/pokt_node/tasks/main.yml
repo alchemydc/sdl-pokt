@@ -67,6 +67,7 @@
     owner: "{{ pokt_user }}"
     group: "{{ pokt_user }}"
     mode: 0750
+  tags: "pokt_update_public_ip"
 
 - name: Schedule update_public_ip.sh script to run daily
   ansible.builtin.cron:
