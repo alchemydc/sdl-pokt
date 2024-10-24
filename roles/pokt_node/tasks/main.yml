@@ -75,5 +75,5 @@
     user: "{{ pokt_user }}"
     minute: "20"
     hour: "4"
-    job: "{{ pokt_user_dir }}/update_public_ip.sh > /dev/null 2>&1"
+    job: "{{ pokt_user_dir }}/update_public_ip.sh"
 
